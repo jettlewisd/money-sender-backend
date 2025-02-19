@@ -1,9 +1,9 @@
-package com.jettdrafahl.money_sender.dao;
-import com.jettdrafahl.money_sender.model.User;
+package com.jettdrafahl.money_sender.service;
 
+import com.jettdrafahl.money_sender.model.User;
 import java.util.List;
 
-public interface UserDao {
+public interface UserService {
     User getUserById(Long id);
     List<User> getAllUsers();
     User findByUsername(String username);

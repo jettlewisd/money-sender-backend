@@ -1,9 +1,9 @@
-package com.jettdrafahl.money_sender.dao;
+package com.jettdrafahl.money_sender.service;
 
 import com.jettdrafahl.money_sender.model.Transaction;
 import java.util.List;
 
-public interface TransactionDao {
+public interface TransactionService {
     Transaction getTransactionById(Long id);
     List<Transaction> getAllTransactions();
     List<Transaction> getTransactionsBySender(Long senderAccountId);

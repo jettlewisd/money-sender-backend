@@ -1,9 +1,9 @@
-package com.jettdrafahl.money_sender.dao;
+package com.jettdrafahl.money_sender.service;
 
 import com.jettdrafahl.money_sender.model.Account;
 import java.util.List;
 
-public interface AccountDao {
+public interface AccountService {
     Account getAccountById(Long id);
     List<Account> getAllAccounts();
     List<Account> getAccountsByUserId(Long userId);
