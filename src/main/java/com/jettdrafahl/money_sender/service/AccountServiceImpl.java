@@ -1,9 +1,8 @@
 package com.jettdrafahl.money_sender.service;
 
-
 import com.jettdrafahl.money_sender.dao.AccountDao;
+import com.jettdrafahl.money_sender.exception.ResourceNotFoundException;
 import com.jettdrafahl.money_sender.model.Account;
-import com.jettdrafahl.money_sender.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccountById(Long id) {
-        return accountDao.getAccountById(id);
+        Account account = accountDao.getAccountById(id);
+        if (account == null) {
+            throw new ResourceNotFoundException("Account with ID " + id + " not found.");
+        }
+        return account;
     }
 
     @Override
@@ -31,7 +34,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getAccountsByUserId(Long userId) {
-        return accountDao.getAccountsByUserId(userId);
+        List<Account> accounts = accountDao.getAccountsByUserId(userId);
+        if (accounts.isEmpty()) {
+            throw new ResourceNotFoundException("No accounts found for user ID " + userId);
+        }
+        return accounts;
     }
 
     @Override
@@ -41,11 +48,17 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean updateAccount(Account account) {
+        if (accountDao.getAccountById(account.getId()) == null) {
+            throw new ResourceNotFoundException("Cannot update. Account with ID " + account.getId() + " not found.");
+        }
         return accountDao.updateAccount(account);
     }
 
     @Override
     public boolean deleteAccount(Long id) {
+        if (accountDao.getAccountById(id) == null) {
+            throw new ResourceNotFoundException("Cannot delete. Account with ID " + id + " not found.");
+        }
         return accountDao.deleteAccount(id);
     }
 }

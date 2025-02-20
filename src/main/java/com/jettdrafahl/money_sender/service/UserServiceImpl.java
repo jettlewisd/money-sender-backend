@@ -1,8 +1,8 @@
 package com.jettdrafahl.money_sender.service;
 
 import com.jettdrafahl.money_sender.dao.UserDao;
+import com.jettdrafahl.money_sender.exception.ResourceNotFoundException;
 import com.jettdrafahl.money_sender.model.User;
-import com.jettdrafahl.money_sender.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id) {
-        return userDao.getUserById(id);
+        User user = userDao.getUserById(id);
+        if (user == null) {
+            throw new ResourceNotFoundException("User with ID " + id + " not found.");
+        }
+        return user;
     }
 
     @Override
@@ -30,7 +34,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        return userDao.findByUsername(username);
+        User user = userDao.findByUsername(username);
+        if (user == null) {
+            throw new ResourceNotFoundException("User with username '" + username + "' not found.");
+        }
+        return user;
     }
 
     @Override
@@ -40,11 +48,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean updateUser(User user) {
+        if (userDao.getUserById(user.getId()) == null) {
+            throw new ResourceNotFoundException("Cannot update. User with ID " + user.getId() + " not found.");
+        }
         return userDao.updateUser(user);
     }
 
     @Override
     public boolean deleteUser(Long id) {
+        if (userDao.getUserById(id) == null) {
+            throw new ResourceNotFoundException("Cannot delete. User with ID " + id + " not found.");
+        }
         return userDao.deleteUser(id);
     }
 }
