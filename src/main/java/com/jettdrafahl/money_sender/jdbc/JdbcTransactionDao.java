@@ -45,14 +45,14 @@ public class JdbcTransactionDao implements TransactionDao {
 
     @Override
     public Long createTransaction(Transaction transaction) {
-        String sql = "INSERT INTO transactions (sender_account_id, receiver_account_id, amount, status) VALUES (?, ?, ?, ?) RETURNING id";
-        return jdbcTemplate.queryForObject(sql, Long.class, transaction.getSenderAccountId(), transaction.getReceiverAccountId(), transaction.getAmount(), transaction.getStatus());
+        String sql = "INSERT INTO transactions (sender_account_id, receiver_account_id, amount, timestamp) VALUES (?, ?, ?, ?) RETURNING id";
+        return jdbcTemplate.queryForObject(sql, Long.class, transaction.getSenderAccountId(), transaction.getReceiverAccountId(), transaction.getAmount(), transaction.getTimestamp());
     }
 
     @Override
     public boolean updateTransaction(Transaction transaction) {
-        String sql = "UPDATE transactions SET sender_account_id = ?, receiver_account_id = ?, amount = ?, status = ? WHERE id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, transaction.getSenderAccountId(), transaction.getReceiverAccountId(), transaction.getAmount(), transaction.getStatus(), transaction.getId());
+        String sql = "UPDATE transactions SET sender_account_id = ?, receiver_account_id = ?, amount = ?, timestamp = ? WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, transaction.getSenderAccountId(), transaction.getReceiverAccountId(), transaction.getAmount(), transaction.getTimestamp(), transaction.getId());
         return rowsAffected > 0;
     }
 

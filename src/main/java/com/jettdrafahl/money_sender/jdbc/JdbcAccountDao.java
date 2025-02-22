@@ -39,14 +39,14 @@ public class JdbcAccountDao implements AccountDao {
 
     @Override
     public Long createAccount(Account account) {
-        String sql = "INSERT INTO accounts (user_id, balance) VALUES (?, ?) RETURNING id";
-        return jdbcTemplate.queryForObject(sql, Long.class, account.getUserId(), account.getBalance());
+        String sql = "INSERT INTO accounts (user_id, balance, account_type) VALUES (?, ?, ?) RETURNING id";
+        return jdbcTemplate.queryForObject(sql, Long.class, account.getUserId(), account.getBalance(), account.getAccountType());
     }
 
     @Override
     public boolean updateAccount(Account account) {
-        String sql = "UPDATE accounts SET user_id = ?, balance = ? WHERE id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, account.getUserId(), account.getBalance(), account.getId());
+        String sql = "UPDATE accounts SET user_id = ?, balance = ?, account_type = ? WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, account.getUserId(), account.getBalance(), account.getAccountType(), account.getId());
         return rowsAffected > 0;
     }
 

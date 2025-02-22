@@ -12,7 +12,8 @@ public class AccountRowMapper implements RowMapper<Account> {
         return new Account(
                 rs.getLong("id"),
                 rs.getLong("user_id"),
-                rs.getDouble("balance")
+                rs.getDouble("balance"),
+                rs.getString("account_type") // Map new field
         );
     }
 }
