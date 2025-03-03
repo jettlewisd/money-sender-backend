@@ -37,6 +37,9 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<Long> createUser(@RequestBody User user) {
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
+        }
         Long userId = userService.createUser(user);
         return ResponseEntity.ok(userId);
     }

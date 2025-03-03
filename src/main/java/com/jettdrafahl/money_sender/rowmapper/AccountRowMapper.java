@@ -13,7 +13,7 @@ public class AccountRowMapper implements RowMapper<Account> {
                 rs.getLong("id"),
                 rs.getLong("user_id"),
                 rs.getDouble("balance"),
-                rs.getString("account_type") // Map new field
+                rs.getString("account_type")
         );
     }
 }

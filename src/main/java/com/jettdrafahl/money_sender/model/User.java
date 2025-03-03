@@ -6,13 +6,16 @@ public class User {
     private String username;
     private String passwordHash;
     private String email;
+    private String role;
+
 
     // Constructor
-    public User(Long id, String username, String passwordHash, String email) {
+    public User(Long id, String username, String passwordHash, String email, String role) {
         this.id = id;
         this.username = username;
         this.passwordHash = passwordHash;
         this.email = email;
+        this.role = role;
     }
 
     // Getters
@@ -32,6 +35,10 @@ public class User {
         return email;
     }
 
+    public String getRole() {
+        return role;
+    }
+
     // Setters
     public void setId(Long id) {
         this.id = id;
@@ -49,6 +56,10 @@ public class User {
         this.email = email;
     }
 
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     // toString method
     @Override
     public String toString() {
@@ -57,6 +68,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", passwordHash='" + passwordHash + '\'' +
                 ", email='" + email + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

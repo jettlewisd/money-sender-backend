@@ -43,6 +43,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Long createUser(User user) {
+        if (user.getRole() == null || user.getRole().isEmpty()) {
+            user.setRole("USER");
+        }
         return userDao.createUser(user);
     }
 
