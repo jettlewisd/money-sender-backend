@@ -39,14 +39,14 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public Long createUser(User user) {
-        String sql = "INSERT INTO users (username, password_hash, email, role) VALUES (?, ?, ?, ?) RETURNING id";
-        return jdbcTemplate.queryForObject(sql, Long.class, user.getUsername(), user.getPasswordHash(), user.getEmail(), user.getRole());
+        String sql = "INSERT INTO users (username, password, email, role) VALUES (?, ?, ?, ?) RETURNING id";
+        return jdbcTemplate.queryForObject(sql, Long.class, user.getUsername(), user.getPassword(), user.getEmail(), user.getRole());
     }
 
     @Override
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET username = ?, password_hash = ?, email = ?, role = ? WHERE id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, user.getUsername(), user.getPasswordHash(), user.getEmail(), user.getRole(), user.getId());
+        String sql = "UPDATE users SET username = ?, password = ?, email = ?, role = ? WHERE id = ?";
+        int rowsAffected = jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getEmail(), user.getRole(), user.getId());
         return rowsAffected > 0;
     }
 

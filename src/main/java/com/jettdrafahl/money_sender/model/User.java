@@ -4,16 +4,16 @@ package com.jettdrafahl.money_sender.model;
 public class User {
     private Long id;
     private String username;
-    private String passwordHash;
+    private String password;
     private String email;
     private String role;
 
 
     // Constructor
-    public User(Long id, String username, String passwordHash, String email, String role) {
+    public User(Long id, String username, String password, String email, String role) {
         this.id = id;
         this.username = username;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.email = email;
         this.role = role;
     }
@@ -27,8 +27,8 @@ public class User {
         return username;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
     public String getEmail() {
@@ -48,8 +48,8 @@ public class User {
         this.username = username;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setEmail(String email) {
@@ -66,7 +66,7 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", passwordHash='" + passwordHash + '\'' +
+                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", role='" + role + '\'' +
                 '}';
