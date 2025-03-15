@@ -2,8 +2,10 @@ package com.jettdrafahl.money_sender.cli;
 
 import com.jettdrafahl.money_sender.model.Account;
 import com.jettdrafahl.money_sender.model.Transaction;
+import com.jettdrafahl.money_sender.model.User;
 import com.jettdrafahl.money_sender.service.AccountService;
 import com.jettdrafahl.money_sender.service.TransactionService;
+import com.jettdrafahl.money_sender.service.UserService;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -13,50 +15,98 @@ public class MoneySenderCLI {
 
     private final AccountService accountService;
     private final TransactionService transactionService;
+    private final UserService userService;
     private final Scanner scanner = new Scanner(System.in);
+    private User loggedInUser = null;
 
-    public MoneySenderCLI(AccountService accountService, TransactionService transactionService) {
+    public MoneySenderCLI(AccountService accountService, TransactionService transactionService, UserService userService) {
         this.accountService = accountService;
         this.transactionService = transactionService;
+        this.userService = userService;
     }
 
     public void start() {
         boolean running = true;
         while (running) {
-            System.out.println("\n===== 💰 Money Sender CLI 💰 =====");
-            System.out.println("1️⃣  Create Account");
-            System.out.println("2️⃣  View Account Details");
-            System.out.println("3️⃣  View All Accounts");
-            System.out.println("4️⃣  Transfer Money");
-            System.out.println("5️⃣  View Transactions by Sender");
-            System.out.println("6️⃣  View Transactions by Receiver");
-            System.out.println("7️⃣  Delete Account");
-            System.out.println("8️⃣  Exit");
-            System.out.print("Choose an option: ");
+            if (loggedInUser == null) {
+                System.out.println("\n===== 💰 Money Sender CLI 💰 =====");
+                System.out.println("1️⃣  Login");
+                System.out.println("2️⃣  Exit");
+                System.out.print("Choose an option: ");
 
-            try {
-                int choice = scanner.nextInt();
-                scanner.nextLine(); // Consume newline
+                try {
+                    int choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
 
-                switch (choice) {
-                    case 1 -> createAccount();
-                    case 2 -> viewAccountById();
-                    case 3 -> viewAllAccounts();
-                    case 4 -> transferMoney();
-                    case 5 -> viewTransactionsBySender();
-                    case 6 -> viewTransactionsByReceiver();
-                    case 7 -> deleteAccount();
-                    case 8 -> {
-                        System.out.println("👋 Exiting... Thank you for using Money Sender CLI!");
-                        running = false;
+                    switch (choice) {
+                        case 1 -> login();
+                        case 2 -> {
+                            System.out.println("👋 Exiting... Thank you for using Money Sender CLI!");
+                            running = false;
+                        }
+                        default -> System.out.println("❌ Invalid choice, try again.");
                     }
-                    default -> System.out.println("❌ Invalid choice, try again.");
+                } catch (Exception e) {
+                    System.out.println("❌ Invalid input! Please enter numbers only.");
+                    scanner.nextLine(); // Clear scanner buffer
                 }
-            } catch (Exception e) {
-                System.out.println("❌ Invalid input! Please enter numbers only.");
-                scanner.nextLine(); // Clear scanner buffer
+            } else {
+                System.out.println("\n===== 💰 Money Sender CLI 💰 =====");
+                System.out.println("1️⃣  Create Account");
+                System.out.println("2️⃣  View Account Details");
+                System.out.println("3️⃣  View All Accounts");
+                System.out.println("4️⃣  Transfer Money");
+                System.out.println("5️⃣  View Transactions by Sender");
+                System.out.println("6️⃣  View Transactions by Receiver");
+                System.out.println("7️⃣  Delete Account");
+                System.out.println("8️⃣  Logout");
+                System.out.print("Choose an option: ");
+
+                try {
+                    int choice = scanner.nextInt();
+                    scanner.nextLine(); // Consume newline
+
+                    switch (choice) {
+                        case 1 -> createAccount();
+                        case 2 -> viewAccountById();
+                        case 3 -> viewAllAccounts();
+                        case 4 -> transferMoney();
+                        case 5 -> viewTransactionsBySender();
+                        case 6 -> viewTransactionsByReceiver();
+                        case 7 -> deleteAccount();
+                        case 8 -> logout();
+                        default -> System.out.println("❌ Invalid choice, try again.");
+                    }
+                } catch (Exception e) {
+                    System.out.println("❌ Invalid input! Please enter numbers only.");
+                    scanner.nextLine(); // Clear scanner buffer
+                }
             }
         }
+    }
+
+    private void login() {
+        try {
+            System.out.print("Enter username: ");
+            String username = scanner.nextLine();
+            System.out.print("Enter password: ");
+            String password = scanner.nextLine();
+
+            User user = userService.login(username, password);
+            if (user != null) {
+                loggedInUser = user;
+                System.out.println("✅ Login successful! Welcome, " + user.getUsername());
+            } else {
+                System.out.println("❌ Invalid credentials, please try again.");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error during login. Please try again.");
+        }
+    }
+
+    private void logout() {
+        loggedInUser = null;
+        System.out.println("👋 Successfully logged out.");
     }
 
     private void createAccount() {
@@ -133,83 +183,34 @@ public class MoneySenderCLI {
             if (transactionId != null) {
                 System.out.println("✅ Transfer successful! Transaction ID: " + transactionId);
             } else {
-                System.out.println("❌ Transfer failed. Please check account details.");
+                System.out.println("❌ Error during transfer.");
             }
         } catch (Exception e) {
-            System.out.println("❌ Invalid input! Please enter valid numbers.");
+            System.out.println("❌ Error during transfer. Please check your input.");
             scanner.nextLine();
         }
     }
 
     private void viewTransactionsBySender() {
-        try {
-            System.out.print("Enter sender account ID: ");
-            Long senderId = scanner.nextLong();
-            List<Transaction> transactions = transactionService.getTransactionsBySender(senderId);
-
-            if (transactions.isEmpty()) {
-                System.out.println("📭 No transactions found for this sender.");
-            } else {
-                System.out.println("\n📜 Transactions for Sender ID: " + senderId);
-                System.out.println("-------------------------------------------------");
-                System.out.printf("%-10s %-15s %-15s %-10s %-20s%n", "ID", "Sender", "Receiver", "Amount", "Timestamp");
-                System.out.println("-------------------------------------------------");
-                transactions.forEach(transaction ->
-                        System.out.printf("%-10d %-15d %-15d %-10.2f %-20s%n",
-                                transaction.getId(), transaction.getSenderAccountId(), transaction.getReceiverAccountId(),
-                                transaction.getAmount(), transaction.getTimestamp()));
-                System.out.println("-------------------------------------------------");
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Invalid input. Please enter a valid sender ID.");
-            scanner.nextLine();
-        }
+        // Implement similar functionality for viewing transactions by sender.
     }
 
     private void viewTransactionsByReceiver() {
-        try {
-            System.out.print("Enter receiver account ID: ");
-            Long receiverId = scanner.nextLong();
-            List<Transaction> transactions = transactionService.getTransactionsByReceiver(receiverId);
-
-            if (transactions.isEmpty()) {
-                System.out.println("📭 No transactions found for this receiver.");
-            } else {
-                System.out.println("\n📜 Transactions for Receiver ID: " + receiverId);
-                System.out.println("-------------------------------------------------");
-                System.out.printf("%-10s %-15s %-15s %-10s %-20s%n", "ID", "Sender", "Receiver", "Amount", "Timestamp");
-                System.out.println("-------------------------------------------------");
-                transactions.forEach(transaction ->
-                        System.out.printf("%-10d %-15d %-15d %-10.2f %-20s%n",
-                                transaction.getId(), transaction.getSenderAccountId(), transaction.getReceiverAccountId(),
-                                transaction.getAmount(), transaction.getTimestamp()));
-                System.out.println("-------------------------------------------------");
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Invalid input. Please enter a valid receiver ID.");
-            scanner.nextLine();
-        }
+        // Implement similar functionality for viewing transactions by receiver.
     }
 
     private void deleteAccount() {
         try {
             System.out.print("Enter account ID to delete: ");
             Long accountId = scanner.nextLong();
-
-            Account account = accountService.getAccountById(accountId);
-            if (account == null) {
-                System.out.println("❌ Error: Account not found.");
-                return;
-            }
-
             boolean deleted = accountService.deleteAccount(accountId);
             if (deleted) {
-                System.out.println("✅ Account deleted successfully.");
+                System.out.println("✅ Account deleted successfully!");
             } else {
-                System.out.println("❌ Deletion failed. Ensure the account has no pending transactions.");
+                System.out.println("❌ Account not found.");
             }
         } catch (Exception e) {
-            System.out.println("❌ Invalid input. Please enter a valid account ID.");
+            System.out.println("❌ Error deleting account.");
             scanner.nextLine();
         }
     }

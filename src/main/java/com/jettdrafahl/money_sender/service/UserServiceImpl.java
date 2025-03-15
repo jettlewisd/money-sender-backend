@@ -64,4 +64,14 @@ public class UserServiceImpl implements UserService {
         }
         return userDao.deleteUser(id);
     }
+
+    @Override
+    public User login(String username, String password) {
+        // Retrieve user by username from the database
+        User user = userDao.findByUsername(username);
+        if (user != null && user.getPassword().equals(password)) {
+            return user;  // Successfully authenticated
+        }
+        return null;  // Authentication failed
+    }
 }
