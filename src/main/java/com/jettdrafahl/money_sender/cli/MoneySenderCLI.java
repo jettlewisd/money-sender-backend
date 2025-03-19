@@ -1,5 +1,6 @@
 package com.jettdrafahl.money_sender.cli;
 
+import com.jettdrafahl.money_sender.exception.ResourceNotFoundException;
 import com.jettdrafahl.money_sender.model.Account;
 import com.jettdrafahl.money_sender.model.Transaction;
 import com.jettdrafahl.money_sender.model.User;
@@ -51,36 +52,7 @@ public class MoneySenderCLI {
                     scanner.nextLine(); // Clear scanner buffer
                 }
             } else {
-                System.out.println("\n===== 💰 Money Sender CLI 💰 =====");
-                System.out.println("1️⃣  Create Account");
-                System.out.println("2️⃣  View Account Details");
-                System.out.println("3️⃣  View All Accounts");
-                System.out.println("4️⃣  Transfer Money");
-                System.out.println("5️⃣  View Transactions by Sender");
-                System.out.println("6️⃣  View Transactions by Receiver");
-                System.out.println("7️⃣  Delete Account");
-                System.out.println("8️⃣  Logout");
-                System.out.print("Choose an option: ");
-
-                try {
-                    int choice = scanner.nextInt();
-                    scanner.nextLine(); // Consume newline
-
-                    switch (choice) {
-                        case 1 -> createAccount();
-                        case 2 -> viewAccountById();
-                        case 3 -> viewAllAccounts();
-                        case 4 -> transferMoney();
-                        case 5 -> viewTransactionsBySender();
-                        case 6 -> viewTransactionsByReceiver();
-                        case 7 -> deleteAccount();
-                        case 8 -> logout();
-                        default -> System.out.println("❌ Invalid choice, try again.");
-                    }
-                } catch (Exception e) {
-                    System.out.println("❌ Invalid input! Please enter numbers only.");
-                    scanner.nextLine(); // Clear scanner buffer
-                }
+                showMenuBasedOnRole(loggedInUser); // Show role-based menu
             }
         }
     }
@@ -96,6 +68,7 @@ public class MoneySenderCLI {
             if (user != null) {
                 loggedInUser = user;
                 System.out.println("✅ Login successful! Welcome, " + user.getUsername());
+                showMenuBasedOnRole(user); // Show menu based on role
             } else {
                 System.out.println("❌ Invalid credentials, please try again.");
             }
@@ -107,6 +80,86 @@ public class MoneySenderCLI {
     private void logout() {
         loggedInUser = null;
         System.out.println("👋 Successfully logged out.");
+    }
+
+    private void showMenuBasedOnRole(User user) {
+        if (user.getRole().equals("admin")) {
+            showAdminMenu();
+        } else {
+            showUserMenu();
+        }
+    }
+
+    private void showAdminMenu() {
+        System.out.println("\n===== 💰 Money Sender CLI (Admin) 💰 =====");
+        System.out.println("1️⃣  Create Account");
+        System.out.println("2️⃣  View Account Details");
+        System.out.println("3️⃣  View All Accounts");
+        System.out.println("4️⃣  Transfer Money");
+        System.out.println("5️⃣  View Transactions by Sender");
+        System.out.println("6️⃣  View Transactions by Receiver");
+        System.out.println("7️⃣  Delete Account");
+        System.out.println("8️⃣  Logout");
+        System.out.print("Choose an option: ");
+
+        handleAdminMenu();
+    }
+
+    private void showUserMenu() {
+        System.out.println("\n===== 💰 Money Sender CLI (User) 💰 =====");
+        System.out.println("1️⃣  Create Account");
+        System.out.println("2️⃣  View Account Details");
+        System.out.println("3️⃣  View All Accounts");
+        System.out.println("4️⃣  Transfer Money");
+        System.out.println("5️⃣  View Transactions by Sender");
+        System.out.println("6️⃣  View Transactions by Receiver");
+        System.out.println("8️⃣  Logout");
+        System.out.print("Choose an option: ");
+
+        handleUserMenu();
+    }
+
+    private void handleAdminMenu() {
+        try {
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1 -> createAccount();
+                case 2 -> viewAccountById();
+                case 3 -> viewAllAccounts();
+                case 4 -> transferMoney();
+                case 5 -> viewTransactionsBySenderMenu();
+                case 6 -> viewTransactionsByReceiverMenu();
+                case 7 -> deleteAccount();
+                case 8 -> logout();
+                default -> System.out.println("❌ Invalid choice, try again.");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Invalid input! Please enter numbers only.");
+            scanner.nextLine(); // Clear scanner buffer
+        }
+    }
+
+    private void handleUserMenu() {
+        try {
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1 -> createAccount();
+                case 2 -> viewAccountById();
+                case 3 -> viewAllAccounts();
+                case 4 -> transferMoney();
+                case 5 -> viewTransactionsBySenderMenu();
+                case 6 -> viewTransactionsByReceiverMenu();
+                case 8 -> logout();
+                default -> System.out.println("❌ Invalid choice, try again.");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Invalid input! Please enter numbers only.");
+            scanner.nextLine(); // Clear scanner buffer
+        }
     }
 
     private void createAccount() {
@@ -191,12 +244,48 @@ public class MoneySenderCLI {
         }
     }
 
-    private void viewTransactionsBySender() {
-        // Implement similar functionality for viewing transactions by sender.
+    private void viewTransactionsBySenderMenu() {
+        System.out.print("Enter sender account ID: ");
+        Long senderAccountId = scanner.nextLong();
+        viewTransactionsBySender(senderAccountId);
     }
 
-    private void viewTransactionsByReceiver() {
-        // Implement similar functionality for viewing transactions by receiver.
+    private void viewTransactionsByReceiverMenu() {
+        System.out.print("Enter receiver account ID: ");
+        Long receiverAccountId = scanner.nextLong();
+        viewTransactionsByReceiver(receiverAccountId);
+    }
+
+    private void viewTransactionsBySender(Long senderAccountId) {
+        try {
+            List<Transaction> transactions = transactionService.getTransactionsBySender(senderAccountId);
+            transactions.forEach(transaction -> {
+                System.out.println("Transaction ID: " + transaction.getId());
+                System.out.println("Sender Account ID: " + transaction.getSenderAccountId());
+                System.out.println("Receiver Account ID: " + transaction.getReceiverAccountId());
+                System.out.println("Amount: " + transaction.getAmount());
+                System.out.println("Timestamp: " + transaction.getTimestamp());
+                System.out.println("---------------");
+            });
+        } catch (ResourceNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void viewTransactionsByReceiver(Long receiverAccountId) {
+        try {
+            List<Transaction> transactions = transactionService.getTransactionsByReceiver(receiverAccountId);
+            transactions.forEach(transaction -> {
+                System.out.println("Transaction ID: " + transaction.getId());
+                System.out.println("Sender Account ID: " + transaction.getSenderAccountId());
+                System.out.println("Receiver Account ID: " + transaction.getReceiverAccountId());
+                System.out.println("Amount: " + transaction.getAmount());
+                System.out.println("Timestamp: " + transaction.getTimestamp());
+                System.out.println("---------------");
+            });
+        } catch (ResourceNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void deleteAccount() {
