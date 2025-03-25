@@ -239,20 +239,67 @@ public class MoneySenderCLI {
     }
 
     private void viewTransactionsBySenderMenu() {
-        System.out.print("Enter sender account ID: ");
-        Long senderAccountId = scanner.nextLong();
+        // Use logged-in user's accounts to get transactions sent
+        List<Account> userAccounts = accountService.getAccountsByUserId(loggedInUser.getId());
+        if (userAccounts.isEmpty()) {
+            System.out.println("❌ No accounts found for this user.");
+            return;
+        }
+
+        // Let's assume we allow the user to select an account
+        System.out.println("Select an account to view sent transactions:");
+        for (int i = 0; i < userAccounts.size(); i++) {
+            System.out.println((i + 1) + ". " + userAccounts.get(i).getAccountType() + " - ID: " + userAccounts.get(i).getId());
+        }
+        System.out.print("Choose an option: ");
+        int accountChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        if (accountChoice < 1 || accountChoice > userAccounts.size()) {
+            System.out.println("❌ Invalid choice, try again.");
+            return;
+        }
+
+        Long senderAccountId = userAccounts.get(accountChoice - 1).getId();
         viewTransactionsBySender(senderAccountId);
     }
 
+
     private void viewTransactionsByReceiverMenu() {
-        System.out.print("Enter receiver account ID: ");
-        Long receiverAccountId = scanner.nextLong();
+        // Use logged-in user's accounts to get transactions received
+        List<Account> userAccounts = accountService.getAccountsByUserId(loggedInUser.getId());
+        if (userAccounts.isEmpty()) {
+            System.out.println("❌ No accounts found for this user.");
+            return;
+        }
+
+        // Let's assume we allow the user to select an account
+        System.out.println("Select an account to view received transactions:");
+        for (int i = 0; i < userAccounts.size(); i++) {
+            System.out.println((i + 1) + ". " + userAccounts.get(i).getAccountType() + " - ID: " + userAccounts.get(i).getId());
+        }
+        System.out.print("Choose an option: ");
+        int accountChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        if (accountChoice < 1 || accountChoice > userAccounts.size()) {
+            System.out.println("❌ Invalid choice, try again.");
+            return;
+        }
+
+        Long receiverAccountId = userAccounts.get(accountChoice - 1).getId();
         viewTransactionsByReceiver(receiverAccountId);
     }
+
 
     private void viewTransactionsBySender(Long senderAccountId) {
         try {
             List<Transaction> transactions = transactionService.getTransactionsBySender(senderAccountId);
+            if (transactions.isEmpty()) {
+                System.out.println("📭 No transactions sent from this account.");
+                return;
+            }
+
             transactions.forEach(transaction -> {
                 System.out.println("Transaction ID: " + transaction.getId());
                 System.out.println("Sender Account ID: " + transaction.getSenderAccountId());
@@ -269,6 +316,11 @@ public class MoneySenderCLI {
     private void viewTransactionsByReceiver(Long receiverAccountId) {
         try {
             List<Transaction> transactions = transactionService.getTransactionsByReceiver(receiverAccountId);
+            if (transactions.isEmpty()) {
+                System.out.println("📭 No transactions received by this account.");
+                return;
+            }
+
             transactions.forEach(transaction -> {
                 System.out.println("Transaction ID: " + transaction.getId());
                 System.out.println("Sender Account ID: " + transaction.getSenderAccountId());
@@ -281,6 +333,7 @@ public class MoneySenderCLI {
             System.out.println(e.getMessage());
         }
     }
+
 
     private void deleteAccount() {
         try {
