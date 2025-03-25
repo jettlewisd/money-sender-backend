@@ -204,6 +204,17 @@ public class MoneySenderCLI {
         try {
             System.out.print("Enter sender account ID: ");
             Long senderId = scanner.nextLong();
+
+            Account senderAccount = accountService.getAccountById(senderId);
+            if (senderAccount == null) {
+                System.out.println("❌ Error: Sender account not found.");
+                return;
+            }
+            if (!senderAccount.getUserId().equals(loggedInUser.getId())) {
+                System.out.println("❌ Error: You can only transfer funds from your own account.");
+                return;
+            }
+
             System.out.print("Enter receiver account ID: ");
             Long receiverId = scanner.nextLong();
             System.out.print("Enter amount: ");
@@ -214,11 +225,6 @@ public class MoneySenderCLI {
                 return;
             }
 
-            Account senderAccount = accountService.getAccountById(senderId);
-            if (senderAccount == null) {
-                System.out.println("❌ Error: Sender account not found.");
-                return;
-            }
             if (senderAccount.getBalance() < amount) {
                 System.out.println("❌ Error: Insufficient funds.");
                 return;
@@ -238,15 +244,15 @@ public class MoneySenderCLI {
         }
     }
 
+
     private void viewTransactionsBySenderMenu() {
-        // Use logged-in user's accounts to get transactions sent
         List<Account> userAccounts = accountService.getAccountsByUserId(loggedInUser.getId());
         if (userAccounts.isEmpty()) {
             System.out.println("❌ No accounts found for this user.");
             return;
         }
 
-        // Let's assume we allow the user to select an account
+
         System.out.println("Select an account to view sent transactions:");
         for (int i = 0; i < userAccounts.size(); i++) {
             System.out.println((i + 1) + ". " + userAccounts.get(i).getAccountType() + " - ID: " + userAccounts.get(i).getId());
@@ -266,14 +272,12 @@ public class MoneySenderCLI {
 
 
     private void viewTransactionsByReceiverMenu() {
-        // Use logged-in user's accounts to get transactions received
         List<Account> userAccounts = accountService.getAccountsByUserId(loggedInUser.getId());
         if (userAccounts.isEmpty()) {
             System.out.println("❌ No accounts found for this user.");
             return;
         }
 
-        // Let's assume we allow the user to select an account
         System.out.println("Select an account to view received transactions:");
         for (int i = 0; i < userAccounts.size(); i++) {
             System.out.println((i + 1) + ". " + userAccounts.get(i).getAccountType() + " - ID: " + userAccounts.get(i).getId());
