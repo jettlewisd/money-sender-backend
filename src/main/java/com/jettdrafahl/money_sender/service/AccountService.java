@@ -10,4 +10,8 @@ public interface AccountService {
     Long createAccount(Account account);
     boolean updateAccount(Account account);
     boolean deleteAccount(Long id);
+
+    // Non-core-CRUD methods
+
+
 }

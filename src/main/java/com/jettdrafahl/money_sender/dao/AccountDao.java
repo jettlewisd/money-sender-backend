@@ -10,4 +10,9 @@ public interface AccountDao {
     Long createAccount(Account account);
     boolean updateAccount(Account account);
     boolean deleteAccount(Long id);
+
+
+    // Non-core-CRUD methods
+
+    Double getBalance(Long id);
 }
