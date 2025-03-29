@@ -11,4 +11,6 @@ public interface TransactionDao {
     Long createTransaction(Transaction transaction);
     boolean updateTransaction(Transaction transaction);
     boolean deleteTransaction(Long id);
+
+    // Non CRUD methods:
 }

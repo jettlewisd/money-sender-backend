@@ -63,7 +63,7 @@ public class JdbcAccountDao implements AccountDao {
     @Override
     public Double getBalance(Long id) {
         String sql = "SELECT balance FROM accounts WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new AccountRowMapper(), id);
+        return jdbcTemplate.queryForObject(sql, Double.class, id);
     }
 
 

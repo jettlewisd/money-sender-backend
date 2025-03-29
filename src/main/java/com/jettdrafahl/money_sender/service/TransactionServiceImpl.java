@@ -70,4 +70,12 @@ public class TransactionServiceImpl implements TransactionService {
         }
         return transactionDao.deleteTransaction(id);
     }
+
+    // Non CRUD methods:
+    @Override
+    public boolean transferMoney(Long senderAccountId, Long receiverAccountId, Double amount) {
+
+
+
+    }
 }

@@ -15,4 +15,6 @@ public interface AccountDao {
     // Non-core-CRUD methods
 
     Double getBalance(Long id);
+
+    // add update balance method here
 }

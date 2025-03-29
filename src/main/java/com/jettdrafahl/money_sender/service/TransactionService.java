@@ -11,4 +11,7 @@ public interface TransactionService {
     Long createTransaction(Transaction transaction);
     boolean updateTransaction(Transaction transaction);
     boolean deleteTransaction(Long id);
+
+    // Non CRUD methods:
+    boolean transferMoney(Long senderAccountId, Long receiverAccountId, Double amount);
 }
