@@ -67,12 +67,9 @@ public class JdbcAccountDao implements AccountDao {
     }
 
 
-    /*
     @Override
-    public boolean updateBalance(Account account) {
-        String sql = "UPDATE accounts SET balance = ? WHERE id = ?";
-        int rowsAffected = jdbcTemplate.update(sql, account.getBalance());
-        return rowsAffected > 0;
+    public void updateBalance(Long userId, double amount) {
+        jdbcTemplate.update("UPDATE account SET balance = balance + ? WHERE id = ?", amount, userId);
     }
-     */
+
 }

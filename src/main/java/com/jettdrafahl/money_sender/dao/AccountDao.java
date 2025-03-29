@@ -16,5 +16,6 @@ public interface AccountDao {
 
     Double getBalance(Long id);
 
-    // add update balance method here
+
+    void updateBalance(Long userId, double amount);
 }
