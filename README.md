@@ -1,6 +1,4 @@
-Certainly! Here’s the updated version of the README:
 
----
 
 # Money Transfer Application
 
