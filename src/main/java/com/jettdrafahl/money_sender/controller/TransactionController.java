@@ -1,7 +1,9 @@
 package com.jettdrafahl.money_sender.controller;
 
+import com.jettdrafahl.money_sender.exception.ResourceNotFoundException;
 import com.jettdrafahl.money_sender.model.Transaction;
 import com.jettdrafahl.money_sender.service.TransactionService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +60,18 @@ public class TransactionController {
     public ResponseEntity<Boolean> deleteTransaction(@PathVariable Long id) {
         boolean deleted = transactionService.deleteTransaction(id);
         return ResponseEntity.ok(deleted);
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<Void> transferMoney(@RequestParam Long senderAccountId,
+                                              @RequestParam Long receiverAccountId,
+                                              @RequestParam Double amount) {
+        try {
+            transactionService.transferMoney(senderAccountId, receiverAccountId, amount);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException | ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 }
 

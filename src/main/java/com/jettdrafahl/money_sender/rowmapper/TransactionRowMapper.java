@@ -13,7 +13,7 @@ public class TransactionRowMapper implements RowMapper<Transaction> {
                 rs.getLong("sender_account_id"),
                 rs.getLong("receiver_account_id"),
                 rs.getDouble("amount"),
-                rs.getTimestamp("timestamp") // Updated mapping
+                rs.getTimestamp("timestamp")
         );
     }
 }

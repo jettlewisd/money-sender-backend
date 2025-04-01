@@ -28,6 +28,6 @@ public class MoneySenderApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) {
 		MoneySenderCLI cli = new MoneySenderCLI(accountService, transactionService, userService);
-		cli.start(); // Start the CLI when the application runs
+		cli.start();
 	}
 }

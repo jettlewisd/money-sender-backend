@@ -23,14 +23,14 @@ public class Transaction {
     public Long getSenderAccountId() { return senderAccountId; }
     public Long getReceiverAccountId() { return receiverAccountId; }
     public Double getAmount() { return amount; }
-    public Timestamp getTimestamp() { return timestamp; } // Updated getter
+    public Timestamp getTimestamp() { return timestamp; }
 
     // Setters
     public void setId(Long id) { this.id = id; }
     public void setSenderAccountId(Long senderAccountId) { this.senderAccountId = senderAccountId; }
     public void setReceiverAccountId(Long receiverAccountId) { this.receiverAccountId = receiverAccountId; }
     public void setAmount(Double amount) { this.amount = amount; }
-    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; } // Updated setter
+    public void setTimestamp(Timestamp timestamp) { this.timestamp = timestamp; }
 
     // toString method
     @Override
@@ -40,7 +40,7 @@ public class Transaction {
                 ", senderAccountId=" + senderAccountId +
                 ", receiverAccountId=" + receiverAccountId +
                 ", amount=" + amount +
-                ", timestamp=" + timestamp + // Updated field
+                ", timestamp=" + timestamp +
                 '}';
     }
 }

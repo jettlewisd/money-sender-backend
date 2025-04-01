@@ -13,9 +13,6 @@ public interface AccountDao {
 
 
     // Non-core-CRUD methods
-
     Double getBalance(Long id);
-
-
     void updateBalance(Long userId, double amount);
 }
