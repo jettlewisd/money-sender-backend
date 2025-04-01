@@ -217,6 +217,12 @@ public class MoneySenderCLI {
 
             System.out.print("Enter receiver account ID: ");
             Long receiverId = scanner.nextLong();
+            Account receiverAccount = accountService.getAccountById(receiverId);
+            if (receiverAccount == null) {
+                System.out.println("❌ Error: Receiver account not found.");
+                return;
+            }
+
             System.out.print("Enter amount: ");
             double amount = scanner.nextDouble();
 
@@ -230,10 +236,21 @@ public class MoneySenderCLI {
                 return;
             }
 
+            // Create the transaction
             Transaction transaction = new Transaction(null, senderId, receiverId, amount, new Timestamp(System.currentTimeMillis()));
+
+            // Call the service to create the transaction
             Long transactionId = transactionService.createTransaction(transaction);
 
             if (transactionId != null) {
+                // Update account balances
+                senderAccount.setBalance(senderAccount.getBalance() - amount);
+                receiverAccount.setBalance(receiverAccount.getBalance() + amount);
+
+                // Save updated accounts
+                accountService.updateAccount(senderAccount);
+                accountService.updateAccount(receiverAccount);
+
                 System.out.println("✅ Transfer successful! Transaction ID: " + transactionId);
             } else {
                 System.out.println("❌ Error during transfer.");
@@ -243,6 +260,7 @@ public class MoneySenderCLI {
             scanner.nextLine();
         }
     }
+
 
 
     private void viewTransactionsBySenderMenu() {
