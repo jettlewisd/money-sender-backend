@@ -89,6 +89,7 @@ public class TransactionServiceImpl implements TransactionService {
         if (senderBalance == null) {
             throw new ResourceNotFoundException("Sender account with ID " + senderAccountId + " not found.");
         }
+
         Double receiverBalance = accountDao.getBalance(receiverAccountId);
         if (receiverBalance == null) {
             throw new ResourceNotFoundException("Receiver account with ID " + receiverAccountId + " not found.");

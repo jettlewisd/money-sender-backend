@@ -236,18 +236,14 @@ public class MoneySenderCLI {
                 return;
             }
 
-            // Create the transaction
             Transaction transaction = new Transaction(null, senderId, receiverId, amount, new Timestamp(System.currentTimeMillis()));
 
-            // Call the service to create the transaction
             Long transactionId = transactionService.createTransaction(transaction);
 
             if (transactionId != null) {
-                // Update account balances
                 senderAccount.setBalance(senderAccount.getBalance() - amount);
                 receiverAccount.setBalance(receiverAccount.getBalance() + amount);
 
-                // Save updated accounts
                 accountService.updateAccount(senderAccount);
                 accountService.updateAccount(receiverAccount);
 
