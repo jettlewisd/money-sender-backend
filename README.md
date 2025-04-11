@@ -117,12 +117,12 @@ The **backend API** follows a RESTful architecture, exposing endpoints for accou
 
 1. Clone the repository:
     ```bash
-    git clone <repository-url>
+    git clone <https://github.com/jettlewisd/money-sender-backend-cli.git>
     ```
 
 2. Navigate to the project directory:
     ```bash
-    cd <project-directory>
+    cd <money_sender_backend_cli>
     ```
 
 3. Build the project using Maven:
@@ -136,6 +136,8 @@ The **backend API** follows a RESTful architecture, exposing endpoints for accou
     ```
 
 5. Access the application through the CLI or Postman by interacting with the REST API.
+
+**The SQL script for this project is located in the Resources folder.
 
 ## License
 This project is licensed under the MIT License – see the [LICENSE](LICENSE) file for details.
